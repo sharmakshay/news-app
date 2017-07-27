@@ -1,0 +1,35 @@
+{
+"listlanguages": [
+{
+    "en": "English",
+    "de": "German",
+    "fr": "French"
+}
+],
+
+"listCountries" : [
+{
+    "au": "Australia",
+    "de": "Germany",
+    "gb": "Great Britain",
+    "in": "India",
+    "it": "Italia",
+    "us": "United States"
+}
+],
+
+"listCategories" : [
+{
+    "business": "Business",
+    "entertainment": "Entertainment",
+    "gaming": "Gaming",
+    "general": "General",
+    "music": "Music",
+    "politics": "Politics",
+    "science-and-nature": "Science and Nature",
+    "sport": "Sport",
+    "technology": "Technology"
+}
+]
+
+}

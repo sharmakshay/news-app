@@ -29,14 +29,13 @@ const languaguekeys = Object.keys(listlanguages);
 const countrykeys = Object.keys(listCountries);
 const categorykeys = Object.keys(listCategories);
 
-var lang;
 var country;
-var category;
 
+// initial setup
 var loadData = function(){
 
     // get user language
-    lang = navigator.language;
+    var lang = navigator.language;
     lang = lang.substring(0,2);
     if (!languaguekeys.includes(lang)){
         lang = "en";
@@ -54,17 +53,28 @@ var loadData = function(){
         console.log(country);
     }
 
+    // add categories to select button
     categoryDOM = $('#category');
     $.each(categorykeys, function(){
         categoryDOM.append($("<option />").val(this).text(listCategories[this]));
     });
     categoryDOM.addClass("ui search dropdown optionsstyle");
     
+    // on category change, get news sources, get articles, show articles in DOM
     $('#category').dropdown({
         onChange: function () {
-            category = categoryDOM.val();
+            var allarticles = []
+            var category = categoryDOM.val();
             console.log("getting news for " + lang + country + category);
-            getSources(lang, country, category)
+            var sourceIDs = getSources(lang, country, category);
+            //console.log(sourceIDs);
+            //getArticles()
+            $.each(sourceIDs, function(){
+                var articles = getArticles(this, "top")
+                //console.log(articles);
+                allarticles.push(articles);
+                console.log(allarticles);
+            });
         }
     });
 }
@@ -78,29 +88,38 @@ var getPosition = function(position){
     getCountry(lat, long);
 }
 
-// convert lat, long to country
+// *API CALL* convert lat, long to country
 var getCountry = function(la, lo){
     requrl = "http://ws.geonames.org/countryCodeJSON?lat=" + la + "&lng=" + lo + "&username=veracity";
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", requrl, false);
-    //xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
     var response = JSON.parse(xhttp.responseText);
     country = response['countryCode'].toLowerCase();
-    console.log(country);
 }
 
-// get news sources for a specific language, country, and category
+// *API CALL* get news sources for a specific language, country, and category
 var getSources = function (la, cty, cat) {
+    var sids = []
     requrl = "https://newsapi.org/v1/sources?language=" + la + "&country=" + cty + "&category=" + cat;
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", requrl, false);
     xhttp.send();
     var response = JSON.parse(xhttp.responseText);
-    console.log(response);
-    var sources = response['sources']
-    var sourceIDs = []
-    for (var source in sources){
-        sourceIDs.push(source['id']);
+    var sources = response['sources'];
+    for (var s in sources){
+        sids.push(sources[s].id);
     }
+    return sids;
+}
+
+// *API CALL* get [top, latest, popular] articles for a given source
+var getArticles = function (src, srt){
+    requrl = "https://newsapi.org/v1/articles?source=" + src + "&sortBy=" + srt + "&apiKey=f44132c00c804786b61ba1137c1ec80f";
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", requrl, false);
+    xhttp.send();
+    var response = JSON.parse(xhttp.responseText);
+    var articles = response['articles'];
+    return articles;
 }
