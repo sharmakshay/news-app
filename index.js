@@ -31,7 +31,7 @@ const categorykeys = Object.keys(listCategories);
 
 var country;
 
-// initial setup
+// main function -- gets user language, location, chosen category of news and populates DOM accordingly
 var loadData = function(){
 
     // get user language
@@ -63,23 +63,26 @@ var loadData = function(){
     // on category change, get news sources, get articles, show articles in DOM
     $('#category').dropdown({
         onChange: function () {
-            var allarticles = []
+            var allarticles = {}
             var category = categoryDOM.val();
             console.log("getting news for " + lang + country + category);
+            
+            // get all relevant sources
             var sourceIDs = getSources(lang, country, category);
-            //console.log(sourceIDs);
-            //getArticles()
+
+            // get articles for each source
             $.each(sourceIDs, function(){
-                var articles = getArticles(this, "top")
-                //console.log(articles);
-                allarticles.push(articles);
+                var articles = getArticles(this, "top");
+                allarticles[this] = articles;
                 console.log(allarticles);
             });
+            clearDOM();
+            populateDOM(allarticles);
         }
     });
 }
 
-//**************** Functions used in loadData() ****************//
+// ****************************** Helper functions used in loadData() ****************************** //
 
 // get lat, long of user
 var getPosition = function(position){
@@ -122,4 +125,99 @@ var getArticles = function (src, srt){
     var response = JSON.parse(xhttp.responseText);
     var articles = response['articles'];
     return articles;
+}
+
+// Populate articles into DOM
+var populateDOM = function (articles){
+     var sources = Object.keys(articles);
+     newsDOM = $('#news-container');
+     //console.log(sources);
+    $.each(sources, function(){
+        sourcearticles = articles[this];
+        $.each(sourcearticles, function(){
+            var author = this.author;
+            var description = this.description;
+            var timestamp = this.publishedAt;
+            var title = this.title;
+            var articleURL = this.url;
+            var imgURL = this.urlToImage;
+            
+            // ARTICLE
+            var articledivDOM = $("<div/>") 
+                .addClass("ui centered card");
+            
+            // ARTICLE - DIVIMAGE
+            var articleimgdivDOM = $("<div/>")
+                .addClass("image");
+
+            // ARTICLE - DIVIMAGE - IMAGE
+            var articleimgDOM = $("<img/>")
+                .attr("src", imgURL);
+            
+            // add image to article div
+            articleimgdivDOM.append(articleimgDOM);
+            articledivDOM.append(articleimgdivDOM);
+
+            // ARTICLE - CONTENT
+            var articlecontentdivDOM = $("<div/>")
+                .addClass("content");
+
+            // ARTICLE - CONTENT - HEADER
+            var articleheaderDOM = $("<a/>")
+                .addClass("header")
+                .attr("href", articleURL)
+                .attr("target", "_blank")
+                .text(title);
+            
+            // add header to content div
+            articlecontentdivDOM.append(articleheaderDOM);
+
+            // ARTICLE - CONTENT - AUTHORS
+            var articleauthordivDOM = $("<div/>")
+                .addClass("meta");
+
+            // ARTICLE - CONTENT - AUTHORS - AUTHORS TEXT
+            // var articleauthorDOM = $("<p/>")
+            //     .text(author);
+            
+            // // add authors to content div
+            // articleauthordivDOM.append(articleauthorDOM);
+            // articlecontentdivDOM.append(articleauthordivDOM);
+
+            // if (!description.includes("...")){
+            //     // ARTICLE - CONTENT - DESCRIPTION
+            //     var articledescripdivDOM = $("<div/>")
+            //         .addClass("description")
+            //         .text(description);
+                
+            //     // add description to content
+            //     articlecontentdivDOM.append(articledescripdivDOM);
+            // }
+
+            // ARTICLE - EXTRA CONTENT - TIME
+            var currTime = new Date();
+            var articletime = parseInt(currTime - timestamp)/1000;
+
+            var articleextracontentdivDOM = $("<div/>")
+                .addClass("extra content");
+
+            var articletimeDOM = $("<span/>")
+                .addClass("right floated")
+                .text(author);
+
+            // add time to content
+            articleextracontentdivDOM.append(articletimeDOM);
+
+            // add content and extra content to article
+            articledivDOM.append(articlecontentdivDOM);
+            //articledivDOM.append(articleextracontentdivDOM);
+            newsDOM.append(articledivDOM);
+
+            //categoryDOM.append($("<option />").val(this).text(listCategories[this]));
+        });
+    });
+}
+
+var clearDOM = function(){
+    $('#news-container').empty();
 }

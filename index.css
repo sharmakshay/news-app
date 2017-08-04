@@ -1,9 +1,35 @@
-#preferences{
-    text-align: center;
-    margin-top: 30px;
+#nav{
+    height: 120px;
+}
+
+#brand, #category-container{
+    display: inline-block;
+}
+
+#brand{
+    margin-top: 25px;
+    padding-left: 150px;
+}
+
+#logo-footer{
+    margin-left: 50px;
+}
+
+#category-container{
+    float: right;
+    margin-top: 25px;
+    margin-right: 150px;
 }
 
 #lang-container, #country-container, #category-container{
     display: inline-block;
     padding: 10px;
+}
+
+#news-container{
+    text-align: center;
+    padding-top: 50px;
+    padding-right: 150px;
+    padding-left: 150px;
+    background-color: #E9EBEE;
 }
