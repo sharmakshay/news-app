@@ -1,29 +1,31 @@
 #nav{
     height: 120px;
-}
-
-#brand, #category-container{
-    display: inline-block;
+    width: 100%;
+    text-align: center;
 }
 
 #brand{
     margin-top: 25px;
-    padding-left: 150px;
-}
-
-#logo-footer{
-    margin-left: 50px;
 }
 
 #category-container{
-    float: right;
-    margin-top: 25px;
-    margin-right: 150px;
+    height: 43px;
+    width: 100%;
+    text-align: center;
 }
 
-#lang-container, #country-container, #category-container{
-    display: inline-block;
-    padding: 10px;
+#category-container a{
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top:10px;
+    padding-bottom:10px;
+    text-decoration: none;
+    color: #59595B;
+}
+
+.active{
+    border-bottom-style: solid;
+    border-bottom-color: #5CC7B2;
 }
 
 #news-container{

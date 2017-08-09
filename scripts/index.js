@@ -54,9 +54,13 @@ var loadData = function(){
     }
 
     // add categories to select button
-    categoryDOM = $('#category');
+    categoryDOM = $('#category-container');
     $.each(categorykeys, function(){
-        categoryDOM.append($("<option />").val(this).text(listCategories[this]));
+        categoryDOM.append($("<a />")
+            .attr("id", listCategories[this])
+            .val(listCategories[this])
+            .text(listCategories[this]));
+        console.log(listCategories[this]);
     });
     categoryDOM.addClass("ui search dropdown optionsstyle");
     
@@ -79,6 +83,32 @@ var loadData = function(){
             clearDOM();
             populateDOM(allarticles);
         }
+    });
+
+    $('#category-container a').click(function(event){
+        // handling active tab style
+        activeid = event.target.id;
+        $('#category-container a').removeClass('active');
+        var activecategory = $('#'+ activeid);
+        activecategory.addClass('active');
+
+        // get news sources, articles for active category
+        var allarticles = {}
+        var category = activecategory.val();
+        console.log("getting news for " + lang + country + category);
+        
+        // get all relevant sources
+        var sourceIDs = getSources(lang, country, category);
+
+        // get articles for each source
+        $.each(sourceIDs, function(){
+            var articles = getArticles(this, "top");
+            allarticles[this] = articles;
+            console.log(allarticles);
+        });
+        clearDOM();
+        populateDOM(allarticles);
+
     });
 }
 
