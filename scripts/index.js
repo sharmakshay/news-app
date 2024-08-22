@@ -148,7 +148,7 @@ var getSources = function (la, cty, cat) {
 
 // *API CALL* get [top, latest, popular] articles for a given source
 var getArticles = function (src, srt){
-    requrl = "https://newsapi.org/v1/articles?source=" + src + "&sortBy=" + srt + "&apiKey=f44132c00c804786b61ba1137c1ec80f";
+    requrl = "https://newsapi.org/v1/articles?source=" + src + "&sortBy=" + srt + "&apiKey=";
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", requrl, false);
     xhttp.send();
